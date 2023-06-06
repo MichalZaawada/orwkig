@@ -1,0 +1,18 @@
+# Obraz bazowy
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /app
+
+# Kopiowanie plików projektu i przygotowanie do budowy
+COPY . .
+RUN dotnet restore
+
+# Budowanie aplikacji
+RUN dotnet publish -c Debug -o out
+
+# Obraz docelowy
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out .
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "MyList.Api.dll"]
