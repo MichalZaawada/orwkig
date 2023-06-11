@@ -47,6 +47,14 @@ services:
     depends_on:
       - prometheus
 
+  loki:
+    container_name: orwkig_loki
+    image: grafana/loki:master
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+
 volumes:
   postgres:
     driver: local

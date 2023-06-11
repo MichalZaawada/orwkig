@@ -3,8 +3,19 @@ using MyList.Api.DAL;
 using MyList.Api.DAL.Repositories;
 using MyList.Api.Services;
 using Prometheus;
+using Serilog;
+using Serilog.Sinks.Grafana.Loki;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo
+    .GrafanaLoki("http://loki:3100")
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 var connectionString = builder.Configuration.GetConnectionString("postgres");
 
